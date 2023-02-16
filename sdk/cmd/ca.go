@@ -1,6 +1,8 @@
 package cmd
 
-import "os"
+import (
+	"os"
+)
 
 func ReadCA(path string) string {
 	ca, err := os.ReadFile(path)

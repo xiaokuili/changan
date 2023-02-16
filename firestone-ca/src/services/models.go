@@ -89,5 +89,6 @@ type ApplyCertResp struct {
 }
 
 type DynamToken struct {
-	Key string `json:"key"`
+	Key     string `json:"key"`
+	RootPUB string `json:"rootpub"`
 }

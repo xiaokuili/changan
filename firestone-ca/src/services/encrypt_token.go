@@ -55,7 +55,7 @@ func GenDynamToken(req *QueryCertsReq) (*DynamToken, error) {
 
 	return &DynamToken{
 		Key:     token,
-		RootPUB: res[0].CertContent,
+		RootPUB: root,
 	}, nil
 }
 
