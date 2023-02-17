@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"chainmaker.org/chainmaker/common/v2/crypto"
-	"chainmaker.org/chainmaker/common/v2/crypto/hash"
-	"chainmaker.org/chainmaker/common/v2/crypto/sym/sm4"
 	"encoding/base64"
 	"strconv"
 	"time"
+
+	"chainmaker.org/chainmaker/common/v2/crypto"
+	"chainmaker.org/chainmaker/common/v2/crypto/hash"
+	"chainmaker.org/chainmaker/common/v2/crypto/sym/sm4"
 )
 
 func DecrypData(rootPub, token string, crypted string) string {
@@ -26,7 +27,7 @@ func DecrypToken(rootPub string, token string) string {
 	if err != nil {
 		panic("token 获取时间出错")
 	}
-	if time.Now().Unix()-t > 3600 {
+	if time.Now().Unix()-t > 60*60*24*365 {
 		panic("token过期")
 	}
 	// get ca
