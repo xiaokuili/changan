@@ -4,6 +4,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"fmt"
 
 	bcx509 "chainmaker.org/chainmaker/common/v2/crypto/x509"
@@ -14,25 +15,25 @@ import (
 )
 
 // key is client pub
-func EncryptData(key, data string) string {
-
+func (s *Security) EncryptData(data string) (string, error) {
+	key := ReadCA(s.UserPath)
 	pub, err := Public(key)
 	if err != nil {
-		panic(err)
+		return "", errors.New("加密出错")
 	}
 	// 1. hash
 	k, err := hash.Get(crypto.HASH_TYPE_SM3, []byte(pub))
 	if err != nil {
-		panic(err)
+		return "", errors.New("加密出错")
 	}
 
 	// sm4 encrypt
 	sm4 := sm4.SM4Key{Key: k[:16]}
 	crypt, err := sm4.Encrypt([]byte(data))
 	if err != nil {
-		panic(err)
+		return "", errors.New("加密出错")
 	}
-	return base64.StdEncoding.EncodeToString(crypt)
+	return base64.StdEncoding.EncodeToString(crypt), nil
 
 }
 

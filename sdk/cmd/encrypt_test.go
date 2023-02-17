@@ -5,12 +5,19 @@ import (
 )
 
 func Test_encrypt(t *testing.T) {
+	// 3465489781857462659
+	url := "http://127.0.0.1:8090/api/ca/gendynamtoken?orgId=&userId=&userType=&certUsage=&certSn=&token="
+	certID := "2431617141964880309"
 
-	user := ReadCA("./user.ca")
-	root := ReadCA("./root.ca")
-	token := "qg203u4GCP+vPD4kZMt/xjuAptvh0dXuGftFhwAUREHmNbQYSHv8T143hoXw31tOV6+30atTp5j0LTX/NFQSEVF3IlPUUqtJYu0dZwHcdY7W6zDY72kNgDm1UF2D4A0cSUbEN+lq/fkbTLTeuLOTNuQwoha7FH5zhK7wipzMgko="
+	s := &Security{
+		Url:      url,
+		CertID:   certID,
+		RootPath: "./root.ca",
+		UserPath: "./user.ca",
+	}
+
 	type args struct {
-		ca   string
+		s    *Security
 		data string
 	}
 	tests := []struct {
@@ -21,17 +28,18 @@ func Test_encrypt(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				ca:   user,
+				s:    s,
 				data: "this is secret",
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := EncryptData(tt.args.ca, tt.args.data)
-
-			if got = DecrypData(root, token, got); got != tt.args.data {
-				t.Errorf("encrypt() = %v, want %v", got, tt.args.data)
+			got, _ := s.EncryptData(tt.args.data)
+			gots := make([]string, 0)
+			gots = append(gots, got)
+			if r, _ := s.DecrypDatas(gots); r[0] != tt.args.data {
+				t.Errorf("encrypt() = %v, want %v", r, tt.args.data)
 			}
 		})
 	}

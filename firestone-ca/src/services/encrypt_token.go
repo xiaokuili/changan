@@ -51,26 +51,28 @@ func GenDynamToken(req *QueryCertsReq) (*DynamToken, error) {
 	// dynamToken: encrypt by sm4
 	t := time.Now().Unix()
 	st := strconv.FormatInt(t, 10)
-	token := Encrypt(root, string(pub)+st)
-
+	token, err := Encrypt(root, string(pub)+st)
+	if err != nil {
+		return nil, err
+	}
 	return &DynamToken{
 		Key:     token,
 		RootPUB: root,
 	}, nil
 }
 
-func Encrypt(key, data string) string {
+func Encrypt(key, data string) (string, error) {
 	//
 	k, err := hash.Get(crypto.HASH_TYPE_SM3, []byte(key))
 	if err != nil {
-		panic(err)
+		return "", errors.New("加密失败")
 	}
 
 	sm4 := sm4.SM4Key{Key: k[:16]}
 	crypt, err := sm4.Encrypt([]byte(data))
 	if err != nil {
-		panic(err)
+		return "", errors.New("加密失败")
 	}
-	return base64.StdEncoding.EncodeToString(crypt)
+	return base64.StdEncoding.EncodeToString(crypt), nil
 
 }
