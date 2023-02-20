@@ -1,0 +1,101 @@
+# log config
+log_config:
+  level: info                                   # The log level                               
+  filename: ../log/ca.log                       # The path to the log file            
+  max_size: 1                                   # The maximum size of the log file before cutting (MB)
+  max_age: 30                                   # The maximum number of days to retain old log files
+  max_backups: 5                                # Maximum number of old log files to keep
+
+# db config
+db_config:
+  user: root
+  password: 123456
+  ip: ca-mysql
+  port: 3306
+  dbname: chainmaker_ca
+
+# Base config
+base_config:
+  server_port: 8090                                  # Server port configuration
+  ca_type: single_root                               # Ca server type : double_root/single_root/tls/sign
+#  expire_year: 2                                    # The expiration time of the certificate (year)
+  expire_month: 6                                    # The expiration time of the certificate (month)(high level)
+#  cert_valid_time : 2m                              # cert valid time (for testing use only)
+  hash_type: SHA256                                  # SHA256/SHA3_256/SM3
+  key_type: ECC_NISTP256                             # ECC_NISTP256/SM2
+  can_issue_ca: true                                 # Whether can continue to issue CA cert
+  # provide_service_for: [wx-org1.firestone.org,wx-org2.firestone.org,wx-org3.firestone.org,wx-org4.firestone.org]      
+                                                     # A list of organizations that provide services
+  key_encrypt: true                                  # Whether the key is stored in encryption
+  access_control: false                              # Whether to enable permission control
+#  default_domain: chainmaker.org                    # the default value for sans in the certificate
+
+pkcs11_config:
+  enabled: false
+  library: /usr/local/lib64/pkcs11/libupkcs11.so
+  label: HSM
+  password: 11111111
+  session_cache_size: 10
+  hash: "SHA256"
+
+# Root CA config
+root_config:
+  cert:
+    - cert_type: sign                                                  # Certificate path type : tls/sign (if ca_type is 'single_root',should be sign)
+      cert_path: ../crypto-config/rootCA/root.crt                      # Certificate file path
+      private_key_path: ../crypto-config/rootCA/root.key               # private key file path    
+      key_id: SM2SignKey261                                            # pkcs11 key id
+  csr:
+    CN: root                
+    O: org-root                         
+    OU: root                         
+    country: CN                      
+    locality: HangZhou                
+    province: HangZhou             
+
+# intermediate config
+intermediate_config: 
+  - csr:
+      CN: ca-wx-org1.firestone.org                        
+      O: wx-org1.firestone.org                        
+      OU: ca                         
+      country: CN                       
+      locality: HangZhou                
+      province: HangZhou            
+    key_id: SM2SignKey6
+
+  - csr:
+      CN: ca-wx-org2.firestone.org                       
+      O: wx-org2.firestone.org                     
+      OU: ca                         
+      country: CN                       
+      locality: HangZhou                
+      province: HangZhou            
+    key_id: SM2SignKey249
+    
+  - csr:
+      CN: ca-wx-org3.firestone.org                       
+      O: wx-org3.firestone.org                    
+      OU: ca                         
+      country: CN                       
+      locality: HangZhou                
+      province: HangZhou            
+    key_id: SM2SignKey257
+
+  - csr:
+      CN: ca-wx-org4.firestone.org                    
+      O: wx-org4.firestone.org                    
+      OU: ca                         
+      country: CN                       
+      locality: HangZhou                
+      province: HangZhou            
+    key_id: SM2SignKey260
+
+# access control config
+access_control_config:
+  - app_role: admin
+    app_id: admin1
+    app_key: passw0rd
+  - app_role: user
+    app_id: user1
+    app_key: passw0rd
