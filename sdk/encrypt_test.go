@@ -1,4 +1,4 @@
-package cmd
+package sdk
 
 import (
 	"testing"
@@ -6,8 +6,8 @@ import (
 
 func Test_encrypt(t *testing.T) {
 	// 3465489781857462659
-	url := "http://127.0.0.1:8090/api/ca/gendynamtoken?orgId=&userId=&userType=&certUsage=&certSn=&token="
-	certID := "2431617141964880309"
+	url := "http://192.168.200.58:8096/api/ca/gendynamtoken?orgId=&userId=&userType=&certUsage=&certSn=&token=" // prod
+	certID := "4340649902272900003"
 
 	s := &Security{
 		Url:      url,

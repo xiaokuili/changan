@@ -1,4 +1,4 @@
-package cmd
+package sdk
 
 import (
 	"crypto/x509"
